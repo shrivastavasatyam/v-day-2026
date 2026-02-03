@@ -37,32 +37,35 @@
 
     .buttons {
       position: relative;
-      height: 60px;
+      height: 80px;
     }
 
     button {
       font-size: 1.1rem;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 0.15s ease;
+      position: absolute;
     }
 
     #yesBtn {
       background-color: #ff4d6d;
       color: white;
-      margin-right: 20px;
-    }
-
-    #yesBtn:hover {
-      transform: scale(1.1);
+      left: 50%;
+      transform: translateX(-120%);
     }
 
     #noBtn {
       background-color: #ccc;
       color: #333;
-      position: absolute;
+      left: 50%;
+      transform: translateX(20%);
+    }
+
+    #yesBtn:hover {
+      transform: translateX(-120%) scale(1.1);
     }
 
     .success {
@@ -85,9 +88,8 @@
   </div>
 
   <div class="card success" id="successCard">
-    <h1>YAY!!! 🎉💖</h1>
-    <p>Best decision you’ve made all day 😌</p>
-    <p>See you on Valentine’s Day ❤️</p>
+    <h1>YOU ARE TRAPPED FOREVER HAHAHAHA 😈❤️</h1>
+    <p>😘😘😘😘😘😘😘</p>
   </div>
 
   <script>
@@ -96,16 +98,55 @@
     const mainCard = document.getElementById("mainCard");
     const successCard = document.getElementById("successCard");
 
-    noBtn.addEventListener("mouseenter", () => {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    let dodgeCount = 0;
+    const maxDodges = 8; // after this, No turns into Yes
+
+    function moveNoButton() {
+      const padding = 20;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
+    }
+
+    // Make it run away when the cursor gets close
+    document.addEventListener("mousemove", (e) => {
+      const rect = noBtn.getBoundingClientRect();
+      const btnCenterX = rect.left + rect.width / 2;
+      const btnCenterY = rect.top + rect.height / 2;
+
+      const distX = e.clientX - btnCenterX;
+      const distY = e.clientY - btnCenterY;
+      const distance = Math.sqrt(distX * distX + distY * distY);
+
+      if (distance < 120 && dodgeCount < maxDodges) {
+        moveNoButton();
+        dodgeCount++;
+
+        if (dodgeCount >= maxDodges) {
+          // Turn No into Yes 😈
+          noBtn.textContent = "Yes 💖";
+          noBtn.style.backgroundColor = "#ff4d6d";
+          noBtn.style.color = "white";
+        }
+      }
     });
 
-    yesBtn.addEventListener("click", () => {
+    // If she clicks the (now Yes) button or the real Yes button
+    function showSuccess() {
       mainCard.style.display = "none";
       successCard.style.display = "block";
+    }
+
+    yesBtn.addEventListener("click", showSuccess);
+    noBtn.addEventListener("click", () => {
+      if (dodgeCount >= maxDodges) {
+        showSuccess();
+      }
     });
   </script>
 </body>
