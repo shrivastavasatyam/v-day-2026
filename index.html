@@ -23,7 +23,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       text-align: center;
       max-width: 90%;
-      position: relative; /* important: anchor for No button */
+      position: relative;
     }
 
     h1 {
@@ -54,6 +54,7 @@
     #yesBtn {
       background-color: #ff4d6d;
       color: white;
+      margin-right: 20px;
     }
 
     #yesBtn:hover {
@@ -63,9 +64,12 @@
     #noBtn {
       background-color: #ccc;
       color: #333;
-      position: absolute;   /* stays inside the card */
-      top: 10px;
-      right: 10px;
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(20%);
+      width: 110px;          /* ✅ fixed width so it doesn't resize */
+      text-align: center;
     }
 
     .success {
@@ -93,10 +97,12 @@
 
   <div class="card success" id="successCard">
     <h1> ❤️😈 YOU ARE TRAPPED FOREVER HAHAHAHA 😈❤️ </h1>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
+    <h2> 😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘 </h2>
+    <img 
+      src="love-cuties.gif" 
+      alt="Love GIF"
+      style="max-width: 100%; border-radius: 12px; margin-top: 20px;"
+    >
   </div>
 
   <script>
@@ -111,14 +117,13 @@
     function getCardCorners() {
       const cardRect = mainCard.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
-
       const padding = 10;
 
       return [
-        { x: padding, y: padding }, // top-left
-        { x: cardRect.width - btnRect.width - padding, y: padding }, // top-right
-        { x: padding, y: cardRect.height - btnRect.height - padding }, // bottom-left
-        { x: cardRect.width - btnRect.width - padding, y: cardRect.height - btnRect.height - padding } // bottom-right
+        { x: padding, y: padding },
+        { x: cardRect.width - btnRect.width - padding, y: padding },
+        { x: padding, y: cardRect.height - btnRect.height - padding },
+        { x: cardRect.width - btnRect.width - padding, y: cardRect.height - padding }
       ];
     }
 
@@ -128,9 +133,6 @@
       noBtn.style.left = corner.x + "px";
       noBtn.style.top = corner.y + "px";
     }
-
-    // Initial position
-    moveNoButton();
 
     document.addEventListener("mousemove", (e) => {
       const rect = noBtn.getBoundingClientRect();
@@ -146,7 +148,6 @@
         dodgeCount++;
 
         if (dodgeCount >= maxDodges) {
-          // Turn No into Yes 😈
           noBtn.textContent = "Yes 💖";
           noBtn.style.backgroundColor = "#ff4d6d";
           noBtn.style.color = "white";
