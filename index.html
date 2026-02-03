@@ -18,13 +18,12 @@
 
     .card {
       background: white;
-      padding: 30px 40px;
+      padding: 30px 40px 60px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       text-align: center;
       max-width: 90%;
-      position: relative;
-      z-index: 1;
+      position: relative; /* important: anchor for No button */
     }
 
     h1 {
@@ -34,12 +33,13 @@
 
     p {
       font-size: 1.1rem;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
     }
 
     .buttons {
       position: relative;
       height: 80px;
+      margin-top: 10px;
     }
 
     button {
@@ -54,18 +54,18 @@
     #yesBtn {
       background-color: #ff4d6d;
       color: white;
-      margin-right: 20px;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.1);
     }
 
     #noBtn {
       background-color: #ccc;
       color: #333;
-      position: fixed;   /* key: floats over everything */
-      z-index: 9999;     /* key: always on top */
-    }
-
-    #yesBtn:hover {
-      transform: scale(1.1);
+      position: absolute;   /* stays inside the card */
+      top: 10px;
+      right: 10px;
     }
 
     .success {
@@ -81,9 +81,10 @@
   <div class="card" id="mainCard">
     <h1> 💖 Hey Somya 💖</h1>
     <p>Will you be my Valentine?</p>
-    <p style="font-size: 0.95rem; opacity: 0.7; margin-top: -10px;">
+    <p style="font-size: 0.95rem; opacity: 0.7; margin-top: -5px;">
       (please don’t click No 😅)
     </p>
+
     <div class="buttons">
       <button id="yesBtn">Yes 💖</button>
       <button id="noBtn">No 😐</button>
@@ -107,27 +108,30 @@
     let dodgeCount = 0;
     const maxDodges = 8;
 
-    // Define 4 screen corners
-    function getCorners() {
+    function getCardCorners() {
+      const cardRect = mainCard.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const padding = 10;
+
       return [
-        { x: 20, y: 20 }, // top-left
-        { x: window.innerWidth - noBtn.offsetWidth - 20, y: 20 }, // top-right
-        { x: 20, y: window.innerHeight - noBtn.offsetHeight - 20 }, // bottom-left
-        { x: window.innerWidth - noBtn.offsetWidth - 20, y: window.innerHeight - noBtn.offsetHeight - 20 } // bottom-right
+        { x: padding, y: padding }, // top-left
+        { x: cardRect.width - btnRect.width - padding, y: padding }, // top-right
+        { x: padding, y: cardRect.height - btnRect.height - padding }, // bottom-left
+        { x: cardRect.width - btnRect.width - padding, y: cardRect.height - btnRect.height - padding } // bottom-right
       ];
     }
 
     function moveNoButton() {
-      const corners = getCorners();
+      const corners = getCardCorners();
       const corner = corners[Math.floor(Math.random() * corners.length)];
       noBtn.style.left = corner.x + "px";
       noBtn.style.top = corner.y + "px";
     }
 
-    // Initial position (bottom-right corner)
+    // Initial position
     moveNoButton();
 
-    // Make it run away when the cursor gets close
     document.addEventListener("mousemove", (e) => {
       const rect = noBtn.getBoundingClientRect();
       const btnCenterX = rect.left + rect.width / 2;
