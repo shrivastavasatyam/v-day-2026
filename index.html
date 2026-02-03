@@ -23,6 +23,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       text-align: center;
       max-width: 90%;
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
@@ -47,25 +49,23 @@
       border-radius: 12px;
       cursor: pointer;
       transition: transform 0.15s ease;
-      position: absolute;
     }
 
     #yesBtn {
       background-color: #ff4d6d;
       color: white;
-      left: 50%;
-      transform: translateX(-120%);
+      margin-right: 20px;
     }
 
     #noBtn {
       background-color: #ccc;
       color: #333;
-      left: 50%;
-      transform: translateX(20%);
+      position: fixed;   /* key: floats over everything */
+      z-index: 9999;     /* key: always on top */
     }
 
     #yesBtn:hover {
-      transform: translateX(-120%) scale(1.1);
+      transform: scale(1.1);
     }
 
     .success {
@@ -96,10 +96,6 @@
     <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
     <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
     <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
-    <p>😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘😘</p>
   </div>
 
   <script>
@@ -109,19 +105,27 @@
     const successCard = document.getElementById("successCard");
 
     let dodgeCount = 0;
-    const maxDodges = 8; // after this, No turns into Yes
+    const maxDodges = 8;
+
+    // Define 4 screen corners
+    function getCorners() {
+      return [
+        { x: 20, y: 20 }, // top-left
+        { x: window.innerWidth - noBtn.offsetWidth - 20, y: 20 }, // top-right
+        { x: 20, y: window.innerHeight - noBtn.offsetHeight - 20 }, // bottom-left
+        { x: window.innerWidth - noBtn.offsetWidth - 20, y: window.innerHeight - noBtn.offsetHeight - 20 } // bottom-right
+      ];
+    }
 
     function moveNoButton() {
-      const padding = 20;
-      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      const corners = getCorners();
+      const corner = corners[Math.floor(Math.random() * corners.length)];
+      noBtn.style.left = corner.x + "px";
+      noBtn.style.top = corner.y + "px";
     }
+
+    // Initial position (bottom-right corner)
+    moveNoButton();
 
     // Make it run away when the cursor gets close
     document.addEventListener("mousemove", (e) => {
@@ -146,7 +150,6 @@
       }
     });
 
-    // If she clicks the (now Yes) button or the real Yes button
     function showSuccess() {
       mainCard.style.display = "none";
       successCard.style.display = "block";
